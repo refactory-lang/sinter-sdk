@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="https://github.com/refactory-lang"><img src="https://raw.githubusercontent.com/refactory-lang/.github/main/assets/refactory-logo.svg" alt="Refactory" width="300"></a>
+</p>
+
 # sinter-sdk
 
 Step SDKs for the Sinter compiled workflow automation platform. Operators write workflow steps in constrained Python or TypeScript, compiled to native Rust via the Refactory pipeline.

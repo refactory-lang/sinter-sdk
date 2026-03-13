@@ -1,49 +1,74 @@
-# Specification Quality Checklist: Sinter Step SDKs
+# Requirements Checklist: Sinter Step SDKs
 
-**Purpose**: Validate specification completeness and quality
-**Created**: 2026-03-13
+**Feature Branch**: `001-sinter-step-sdks`
+**Last Updated**: 2026-03-13
 
-## Content Quality
+## Functional Requirements
 
-- [x] No implementation details — spec describes interfaces and contracts, not internal code
-- [x] Focused on user value — developers write steps in their preferred language with identical APIs
-- [x] User stories describe real workflow scenarios (Python step authoring, TypeScript step authoring, Rust translation)
-- [x] Acceptance scenarios use Given/When/Then format with concrete data examples
-- [x] Edge cases cover missing keys, empty input, large payloads, secret redaction, and naming conventions
-- [x] No technology-specific implementation prescribed
-- [x] Requirements use RFC 2119 language (MUST)
+### Python SDK - StepContext
 
-## Requirement Completeness
+- [ ] **FR-001**: `StepContext` and `StepResult` exported from `sinter_sdk` top-level `__init__.py`
+- [ ] **FR-003**: `StepContext.input_data()` returns `dict[str, Any]`; returns empty dict when no input provided
+- [ ] **FR-004**: `StepContext.config(key: str)` returns `Optional[str]`; returns `None` for missing keys
+- [ ] **FR-005**: `StepContext.secret(key: str)` returns `Optional[str]`; returns `None` for missing keys without raising
+- [ ] **FR-006**: `StepContext.step_id()` returns `str` with the current step's unique identifier
+- [ ] **FR-014**: `StepContext` is immutable (no public setters, no mutable state)
 
-- [x] No [NEEDS CLARIFICATION] markers remain
-- [x] StepContext fields are fully specified for both Python and TypeScript with exact types
-- [x] StepResult fields are fully specified for both Python and TypeScript with exact types
-- [x] Semantic equivalence between the two SDKs is explicitly required (FR-005)
-- [x] Independent installability is specified (pip and npm)
-- [x] Type definition files are required (.pyi and .d.ts)
-- [x] StepFunction type alias is required in both languages
-- [x] Status validation at construction time is required
-- [x] Naming convention differences (snake_case vs camelCase) are documented
+### Python SDK - StepResult
 
-## User Story Quality
+- [ ] **FR-007**: `StepResult` accepts `data: dict[str, Any]`, `status: StepStatus`, and `error: Optional[str]`
+- [ ] **FR-008**: `StepResult.status` constrained to `"success"`, `"failure"`, `"skipped"` via enum or literal type
+- [ ] **FR-015**: `StepResult` is immutable after construction (`@dataclass(frozen=True)` or equivalent)
 
-- [x] Each user story has a clear "As a / I want / So that" structure
-- [x] Priorities are assigned (P1 for authoring, P2 for translation)
-- [x] Priority rationale is provided for each
-- [x] Independent test is described for each story
-- [x] Python and TypeScript scenarios are symmetrical, confirming API parity
-- [x] Translation scenario covers both pipelines
+### Python SDK - Type Safety
 
-## Success Criteria Quality
+- [ ] **FR-009**: Step execute return type is `Result[StepResult, str]` from the `returns` library
+- [ ] **FR-011**: All SDK source files pass `mypy --strict` with zero errors
+- [ ] **FR-012**: All Python methods and fields use `snake_case` naming
 
-- [x] Each criterion is measurable (mypy --strict, tsc --strict, cargo check, 1:1 property comparison)
-- [x] Criteria cover type checking, translation, publishing, and version synchronisation
-- [x] No subjective criteria
-- [x] Cross-reference table requirement ensures parity is auditable
+### TypeScript SDK - StepContext
 
-## Traceability
+- [ ] **FR-002**: `StepContext` and `StepResult` exported from `@sinter/sdk` package entry point
+- [ ] **FR-003**: `StepContext.inputData()` returns `Record<string, unknown>`; returns empty object when no input provided
+- [ ] **FR-004**: `StepContext.config(key: string)` returns `string | undefined`; returns `undefined` for missing keys
+- [ ] **FR-005**: `StepContext.secret(key: string)` returns `string | undefined`; returns `undefined` for missing keys without throwing
+- [ ] **FR-006**: `StepContext.stepId()` returns `string` with the current step's unique identifier
+- [ ] **FR-014**: `StepContext` is immutable (`readonly` properties, no mutation methods)
 
-- [x] Every FR maps to at least one acceptance scenario
-- [x] Every success criterion maps to at least one FR
-- [x] Key entities table covers all three entities (StepContext, StepResult, StepFunction)
-- [x] No orphan requirements
+### TypeScript SDK - StepResult
+
+- [ ] **FR-007**: `StepResult` accepts `data: Record<string, unknown>`, `status: StepStatus`, and optional `error: string`
+- [ ] **FR-008**: `StepResult.status` constrained to `"success" | "failure" | "skipped"` via union type
+- [ ] **FR-015**: `StepResult` is immutable after construction (`readonly` fields)
+
+### TypeScript SDK - Type Safety
+
+- [ ] **FR-010**: Step execute return type is `Result<StepResult, string>` from the `neverthrow` library
+- [ ] **FR-011**: All SDK source files pass `tsc --strict` with zero errors
+- [ ] **FR-012**: All TypeScript methods and fields use `camelCase` naming
+
+### Cross-Language Parity
+
+- [ ] **FR-013**: SDK types carry sufficient annotations for Refactory pipeline type extraction
+- [ ] Every `StepContext` method in Python has a corresponding method in TypeScript
+- [ ] Every `StepResult` field in Python has a corresponding field in TypeScript
+- [ ] Naming conventions follow language idioms (`snake_case` vs `camelCase`) while preserving semantic equivalence
+
+## Edge Cases
+
+- [ ] `ctx.input_data()` / `ctx.inputData()` returns empty dict/object when step received no input
+- [ ] `ctx.config(key)` handles keys with special characters (dots, slashes) as opaque strings
+- [ ] `ctx.secret(key)` returns `None`/`undefined` gracefully when no secret store is configured
+- [ ] `StepResult` accepts `None`/`undefined` data without error
+- [ ] Unhandled exceptions in step execution are surfaced as pipeline failures with the exception message
+
+## Success Criteria
+
+- [ ] **SC-001**: Sample Python step passes `mypy --strict`
+- [ ] **SC-002**: Sample TypeScript step passes `tsc --strict`
+- [ ] **SC-003**: 100% StepContext method parity between languages (verified by parity matrix)
+- [ ] **SC-004**: 100% StepResult field parity between languages
+- [ ] **SC-005**: Identical logic in both languages produces identical outputs
+- [ ] **SC-006**: Refactory type extractor processes SDK annotations from both languages
+- [ ] **SC-007**: Unit tests achieve 100% line coverage of StepContext and StepResult
+- [ ] **SC-008**: Zero runtime dependencies beyond `returns` (Python) and `neverthrow` (TypeScript)

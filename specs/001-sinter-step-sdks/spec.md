@@ -134,3 +134,30 @@ A developer writes a step that encounters an error during execution (e.g., inval
 - **SC-006**: The Refactory type extractor can process SDK type annotations from both languages and produce valid Rust struct definitions without manual intervention.
 - **SC-007**: Unit tests for both SDKs achieve 100% line coverage of `StepContext` and `StepResult` implementations.
 - **SC-008**: Both SDKs have zero runtime dependencies beyond `returns` (Python) and `neverthrow` (TypeScript) for Result types.
+
+---
+
+## v0.3 Addendum: Phase 2 Track B — Workflow Runtime Context
+
+*Added 2026-03-16 to align with master spec v0.3 §9.5*
+
+### Workflow Schema
+
+This SDK is part of **Phase 2 Track B** (Sinter Core). The workflow runtime uses a YAML/JSON workflow schema that defines step composition, input/output connections, and trigger configuration. The SDK must define types that are compatible with this schema.
+
+### Runtime Semantics
+
+- The Sinter workflow runtime is built on **Rust with Tokio** for async execution
+- Steps may be async; the runtime manages concurrency, timeouts, and cancellation
+- `StepContext` instances are constructed by the runtime, not by step authors — the SDK defines the interface contract
+
+### Additional Requirements
+
+- **FR-019**: The SDK MUST define TypeScript type declarations for the workflow YAML/JSON schema (step definitions, input/output bindings, trigger configuration)
+- **FR-020**: Steps authored with the SDK MUST be compilable through the Refactory translation pipeline (python-to-rust or typescript-to-rust) to native Rust
+- **FR-021**: The SDK MUST document forward/backward compatibility guarantees between SDK versions and Sinter runtime versions
+
+### Additional Success Criteria
+
+- **SC-009**: A 5-step workflow defined in YAML with 2+ connectors compiles to a native binary via the Refactory pipeline
+- **SC-010**: Performance benchmarks show measurable improvement over equivalent n8n workflow execution

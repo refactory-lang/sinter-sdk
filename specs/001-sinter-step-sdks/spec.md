@@ -137,13 +137,13 @@ A developer writes a step that encounters an error during execution (e.g., inval
 
 ---
 
-## v0.3 Addendum: Phase 2 Track B — Workflow Runtime Context
+## v0.3 Addendum: Milestone 2 Track B — Workflow Runtime Context
 
 *Added 2026-03-16 to align with master spec v0.3 §9.5*
 
 ### Workflow Schema
 
-This SDK is part of **Phase 2 Track B** (Sinter Core). The workflow runtime uses a YAML/JSON workflow schema that defines step composition, input/output connections, and trigger configuration. The SDK must define types that are compatible with this schema.
+This SDK is part of **Milestone 2 Track B** (Sinter Core). The workflow runtime uses a YAML/JSON workflow schema that defines step composition, input/output connections, and trigger configuration. The SDK must define types that are compatible with this schema.
 
 ### Runtime Semantics
 
@@ -154,7 +154,7 @@ This SDK is part of **Phase 2 Track B** (Sinter Core). The workflow runtime uses
 ### Additional Requirements
 
 - **FR-019**: The SDK MUST define TypeScript type declarations for the workflow YAML/JSON schema (step definitions, input/output bindings, trigger configuration)
-- **FR-020**: Steps authored with the SDK MUST be compilable through the Refactory translation pipeline (python-to-rust or typescript-to-rust) to native Rust
+- **FR-020**: Steps authored with the SDK MUST be compilable through the Refactory transformation pipeline (python-to-rust or typescript-to-rust) to native Rust
 - **FR-021**: The SDK MUST document forward/backward compatibility guarantees between SDK versions and Sinter runtime versions
 
 ### Additional Success Criteria
